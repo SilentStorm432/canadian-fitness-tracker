@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CanadianFitnessTracker">
+        <activity android:name=".activity.ProfilePageActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.LogWorkoutActivity"
             android:exported="false" />
