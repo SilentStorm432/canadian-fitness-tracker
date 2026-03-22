@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +21,7 @@ public class ProfilePageActivity extends AppCompatActivity {
     private EditText profileHeight;
     private EditText profileSex;
     private EditText profileWeight;
-    private EditText profileBMI;
+    private TextView profileBMI;
     private Button saveProfile;
 
     private String originalUsername = "";
@@ -60,8 +61,6 @@ private void loadProfileData(int userID)
     String password = "Mishima";
     String height = "200";
     String sex = "Male";
-    String weight = "90";
-    String BMI = "1";
 
     DBHelper dbHelper = new DBHelper(this);
     Profile profile = dbHelper.getUserByID(userID); // example user id
@@ -81,8 +80,6 @@ private void loadProfileData(int userID)
         profilePassword.setText(password);
         profileHeight.setText(height);
         profileSex.setText(sex);
-        profileWeight.setText(weight);
-        profileBMI.setText(BMI);
     }
 
     originalUsername = profileUsername.getText().toString();
@@ -166,13 +163,7 @@ public void saveProfileData(int userID)
         if (height > 0 && weight > 0) {
         }
 
-        originalUsername = profileUsername.getText().toString();
-        originalPassword = profilePassword.getText().toString();
-        originalHeight = profileHeight.getText().toString();
-        originalSex = profileSex.getText().toString();
-        originalWeight = profileWeight.getText().toString();
-        originalBMI = profileBMI.getText().toString();
-
+        loadProfileData(userID);
         saveProfile.setEnabled(false);
 
         Toast.makeText(this, "Profile updated", Toast.LENGTH_SHORT).show();
