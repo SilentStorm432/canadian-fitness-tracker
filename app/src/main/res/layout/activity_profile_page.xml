@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileBlock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle"
+            android:clipToOutline="true"
+            android:src="@drawable/jeffy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/profileTagUsername"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/profileImage" />
+
+        <EditText
+            android:id="@+id/profileUsername"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="Username"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileTagUsername" />
+
+        <TextView
+            android:id="@+id/profileTagPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileUsername"/>
+
+        <EditText
+            android:id="@+id/profilePasword"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="Password"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileTagPassword"/>
+
+        <TextView
+            android:id="@+id/profileTagHeight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Height (cm)"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="@id/profileSex"
+            app:layout_constraintTop_toBottomOf="@id/profilePasword"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <EditText
+            android:id="@+id/profileHeight"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="Height (cm)"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toStartOf="@id/profileSex"
+            app:layout_constraintTop_toBottomOf="@id/profileTagHeight"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/profileTagSex"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sex"
+            app:layout_constraintStart_toEndOf="@id/profileHeight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profilePasword"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <EditText
+            android:id="@+id/profileSex"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="Sex"
+            app:layout_constraintStart_toEndOf="@id/profileHeight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileTagSex"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/profileTagWeight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Weight (kg)"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="@id/profileSex"
+            app:layout_constraintTop_toBottomOf="@id/profileHeight"
+            app:layout_constraintHorizontal_weight="1"/>
+
+
+        <EditText
+            android:id="@+id/profileWeight"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="Weight (kg)"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toStartOf="@id/profileSex"
+            app:layout_constraintTop_toBottomOf="@id/profileTagWeight"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/profileTagBMI"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="BMI"
+            app:layout_constraintStart_toEndOf="@id/profileHeight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileSex"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <TextView
+            android:id="@+id/profileBMI"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="BMI"
+            app:layout_constraintStart_toEndOf="@id/profileHeight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileTagBMI"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <Button
+            android:id="@+id/saveProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:enabled="false"
+            app:layout_constraintTop_toBottomOf="@+id/profileBMI"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

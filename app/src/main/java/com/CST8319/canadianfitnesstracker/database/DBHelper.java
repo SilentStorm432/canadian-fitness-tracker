@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
+
+import com.CST8319.canadianfitnesstracker.activity.Profile;
 import com.CST8319.canadianfitnesstracker.database.WorkoutData;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -111,29 +113,106 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return result;
     }
-
-    public boolean verifyUser(String username, String password) {
+//changed to int
+    public int verifyUser(String username, String password) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM User WHERE Username=? AND Password=?";
         String[] selectionArgs = {username, password};
         android.database.Cursor cursor = db.rawQuery(query, selectionArgs);
-        boolean exists = false;
+
+        //edited out the boolean method replaced it with the user id so user id can be passed onto other methods
+        //boolean exists = false;
+         int userID = -1;
 
         if(cursor.moveToFirst()){
-            exists = true;
+            //exists = true;
+            userID = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
         }
 
         cursor.close();
         db.close();
 
-        return exists;
+        return userID;
     }
 
     public android.database.Cursor getAllWorkouts() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT Name FROM Workout", null);
+    }
+
+    //method to retrieve data from db used in PPA -Alejandro
+    public Profile getUserByID(int userID)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT u.user_id, u.Username, u.Password, u.Sex, u.Height, uw.Weight " +
+                        "FROM User u " +
+                        "LEFT JOIN UserWeight uw ON u.user_id = uw.UserID " +
+                        "WHERE u.user_id = ? " +
+                        "ORDER BY uw.ID DESC " +
+                        "LIMIT 1";
+
+        android.database.Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userID)});
+
+        Profile profile = null;
+
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
+            String username = cursor.getString(cursor.getColumnIndexOrThrow("Username"));
+            String password = cursor.getString(cursor.getColumnIndexOrThrow("Password"));
+            String sex = cursor.getString(cursor.getColumnIndexOrThrow("Sex"));
+            int height = cursor.getInt(cursor.getColumnIndexOrThrow("Height"));
+
+            int weight = 0;
+            int weightIndex = cursor.getColumnIndex("Weight");
+            if (weightIndex != -1 && !cursor.isNull(weightIndex)) {
+                weight = cursor.getInt(weightIndex);
+            }
+
+            double bmi = 0;
+            if (height > 0 && weight > 0) {
+                double heightMeters = height / 100.0;
+                bmi = weight / (heightMeters * heightMeters);
+            }
+
+            profile = new Profile(id, username, password, sex, height, weight, bmi);
+        }
+
+        cursor.close();
+        db.close();
+
+        return profile;
+    }
+    //method to update the db
+    public boolean updateProfile (int userID, String username, String password, String sex, int height)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Username", username);
+        values.put("Password", password);
+        values.put("Sex", sex);
+        values.put("Height", height);
+
+        int rowsAffected = db.update("User", values, "user_id = ?", new String[]{String.valueOf(userID)});
+        db.close();
+
+        return rowsAffected > 0;
+    }
+
+    public boolean saveWeight(int userID, int weight) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("UserID", userID);
+        values.put("Date", String.valueOf(System.currentTimeMillis()));
+        values.put("Weight", weight);
+
+        long result = db.insert("UserWeight", null, values);
+        db.close();
+
+        return result != -1;
     }
 
 }

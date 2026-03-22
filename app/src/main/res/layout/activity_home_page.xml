@@ -31,6 +31,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/viewProfile"
+        android:text="My Profile"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

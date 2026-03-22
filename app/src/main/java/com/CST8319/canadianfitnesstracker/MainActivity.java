@@ -49,18 +49,25 @@ public class MainActivity extends AppCompatActivity {
             String username = editUsername.getText().toString();
             String password = editPassword.getText().toString();
 
-            boolean validUser = dbHelper.verifyUser(username, password);
+            //using int to pass user id if needed
+            //boolean validUser = dbHelper.verifyUser(username, password);
+            int userId = dbHelper.verifyUser(username, password);
 
-            if(validUser){
+            //used to check boolean now check if -1 which would signal that no records found
+            if(userId != -1){
                 Toast.makeText(MainActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
 
+                //added the userID into the preference
                 getSharedPreferences("UserSession", MODE_PRIVATE)
                         .edit()
                         .putBoolean("isLoggedIn", true)
+                        .putInt("userID", userId)
                         .apply();
 
                 Intent intentHome = new Intent(MainActivity.this, HomePageActivity.class);
+                //added to the intent userID
                 intentHome.putExtra("username", username);
+                intentHome.putExtra("userID", userId);
                 startActivity(intentHome);
                 finish();
 

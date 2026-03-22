@@ -30,9 +30,15 @@ public class HomePageActivity extends AppCompatActivity {
         }
 
         Button logWorkoutButton = findViewById(R.id.logWorkoutButton);
+        Button profileButton = findViewById(R.id.viewProfile);
 
         logWorkoutButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, LogWorkoutActivity.class);
+            startActivity(intent);
+        });
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePageActivity.this, ProfilePageActivity.class);
             startActivity(intent);
         });
 
