@@ -184,9 +184,35 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return profile;
+    }
+    //method to update the db
+    public boolean updateProfile (int userID, String username, String password, String sex, int height)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Username", username);
+        values.put("Password", password);
+        values.put("Sex", sex);
+        values.put("Height", height);
 
+        int rowsAffected = db.update("User", values, "user_id = ?", new String[]{String.valueOf(userID)});
+        db.close();
 
+        return rowsAffected > 0;
     }
 
+    public boolean saveWeight(int userID, int weight) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("UserID", userID);
+        values.put("Date", String.valueOf(System.currentTimeMillis()));
+        values.put("Weight", weight);
+
+        long result = db.insert("UserWeight", null, values);
+        db.close();
+
+        return result != -1;
+    }
 
 }
