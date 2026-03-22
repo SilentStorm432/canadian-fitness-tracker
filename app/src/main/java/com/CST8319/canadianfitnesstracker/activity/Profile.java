@@ -27,6 +27,6 @@ public class Profile {
     public String getSex() { return sex; }
     public String getHeight() { return String.valueOf(height); }
     public String getWeight() { return String.valueOf(weight); }
-    public String getBMI() { return String.valueOf(BMI); }
+    public String getBMI() { return String.format("%.2f", BMI); }
 
 }
