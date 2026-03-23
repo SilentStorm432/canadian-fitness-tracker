@@ -54,11 +54,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profileUsername"/>
 
+        <!-- I added inputType as textpassword so the password wouldn't be in plain text -->
         <EditText
             android:id="@+id/profilePasword"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:hint="Password"
+            android:inputType="textPassword"
             app:layout_constraintStart_toEndOf="@id/profileImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profileTagPassword"/>

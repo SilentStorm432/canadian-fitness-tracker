@@ -43,11 +43,11 @@ public class RegisterActivity extends AppCompatActivity {
             long result = dbHelper.addUser(user, pass, userHeight, userSex);
 
             if(result != -1){
-                Toast.makeText(RegisterActivity.this,"User Created",Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this,"User created",Toast.LENGTH_SHORT).show();
                 finish();
             }
             else{
-                Toast.makeText(RegisterActivity.this,"Error creating user",Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this,"error making user profile",Toast.LENGTH_SHORT).show();
             }
 
         });

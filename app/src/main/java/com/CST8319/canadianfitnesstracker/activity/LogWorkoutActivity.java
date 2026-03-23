@@ -4,9 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.CST8319.canadianfitnesstracker.R;
 import com.CST8319.canadianfitnesstracker.database.DBHelper;
 
