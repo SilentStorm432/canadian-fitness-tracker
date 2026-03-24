@@ -1,14 +1,20 @@
 package com.CST8319.canadianfitnesstracker.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CST8319.canadianfitnesstracker.R;
@@ -23,6 +29,9 @@ public class ProfilePageActivity extends AppCompatActivity {
     private EditText profileWeight;
     private TextView profileBMI;
     private Button saveProfile;
+    private ImageView profileImg;
+
+    private String profileImgUri ="";
 
     private String originalUsername = "";
     private String originalPassword = "";
@@ -30,6 +39,9 @@ public class ProfilePageActivity extends AppCompatActivity {
     private String originalSex = "";
     private String originalWeight = "";
     private String originalBMI = "";
+    private String originalImgUri="";
+
+    private ActivityResultLauncher<String[]> imgPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,7 @@ public class ProfilePageActivity extends AppCompatActivity {
         profileWeight = findViewById(R.id.profileWeight);
         profileBMI  = findViewById(R.id.profileBMI);
         saveProfile = findViewById(R.id.saveProfile);
+        profileImg = findViewById(R.id.profileImage);
 
         saveProfile.setEnabled(false);
 
@@ -54,6 +67,23 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         saveProfile.setOnClickListener(v -> saveProfileData(userID));
 
+        imgPicker = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(),
+                uri -> {
+                    if (uri != null) {
+                        getContentResolver().takePersistableUriPermission(
+                                uri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        );
+
+                        profileImg.setImageURI(uri);
+                        profileImgUri = uri.toString();
+                        checkChanges();
+                    }
+                }
+        );
+
+        profileImg.setOnClickListener(v -> imgPicker.launch(new String[]{"image/*"}));
     }
 private void loadProfileData(int userID)
 {
@@ -73,6 +103,21 @@ private void loadProfileData(int userID)
         profileSex.setText(profile.getSex());
         profileWeight.setText(profile.getWeight());
         profileBMI.setText(profile.getBMI());
+        //the app kept crashing 1st becuase the database was old and did not have the column so had to reinstall the app
+        //then it crashed because the img was empty and null when a new user was created so I added an if else
+        String profileUri= profile.getProfileImg();
+        if (profileUri != null && !profileUri.isEmpty())
+        {
+            profileImg.setImageURI(Uri.parse(profileUri));
+            profileImgUri = profileUri;
+            originalImgUri = profileUri;
+        }
+        else
+        {
+            profileImg.setImageResource(R.drawable.jeffy);
+            profileImgUri = profileUri;
+            originalImgUri = profileUri;
+        }
     }
     else
     {
@@ -80,6 +125,7 @@ private void loadProfileData(int userID)
         profilePassword.setText(password);
         profileHeight.setText(height);
         profileSex.setText(sex);
+        profileImg.setImageResource(R.drawable.jeffy);
     }
 
     originalUsername = profileUsername.getText().toString();
@@ -130,7 +176,8 @@ private void checkChanges()
             !profileHeight.getText().toString().equals(originalHeight) ||
             !profileSex.getText().toString().equals(originalSex) ||
             !profileWeight.getText().toString().equals(originalWeight) ||
-            !profileBMI.getText().toString().equals(originalBMI))
+            !profileBMI.getText().toString().equals(originalBMI) ||
+            !profileImgUri.equals(originalImgUri))
     {
         saveProfile.setEnabled(true);
     }
@@ -157,8 +204,9 @@ public void saveProfileData(int userID)
 
     boolean userUpdated = dbHelper.updateProfile(userID, username, password, sex, height);
     boolean weightUpdated = dbHelper.saveWeight(userID, weight);
+    boolean imageUpdated = dbHelper.updateProfileImg(userID,profileImgUri);
 
-    if (userUpdated && weightUpdated) {
+    if (userUpdated && weightUpdated && imageUpdated) {
         double bmi = 0;
         if (height > 0 && weight > 0) {
         }

@@ -27,7 +27,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         "Username TEXT UNIQUE," +
                         "Password TEXT," +
                         "Sex TEXT," +
-                        "Height INTEGER)";
+                        "Height INTEGER," +
+                        "ProfileImg TEXT)"; //added this to control the profile picture
 
         String createWorkoutTable =
                 "CREATE TABLE Workout (" +
@@ -148,7 +149,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =
-                "SELECT u.user_id, u.Username, u.Password, u.Sex, u.Height, uw.Weight " +
+                "SELECT u.user_id, u.Username, u.Password, u.Sex, u.Height, u.ProfileImg, uw.Weight " +
                         "FROM User u " +
                         "LEFT JOIN UserWeight uw ON u.user_id = uw.UserID " +
                         "WHERE u.user_id = ? " +
@@ -164,6 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String username = cursor.getString(cursor.getColumnIndexOrThrow("Username"));
             String password = cursor.getString(cursor.getColumnIndexOrThrow("Password"));
             String sex = cursor.getString(cursor.getColumnIndexOrThrow("Sex"));
+            String profileImg = cursor.getString(cursor.getColumnIndexOrThrow("ProfileImg"));
             int height = cursor.getInt(cursor.getColumnIndexOrThrow("Height"));
 
             int weight = 0;
@@ -178,7 +180,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 bmi = weight / (heightMeters * heightMeters);
             }
 
-            profile = new Profile(id, username, password, sex, height, weight, bmi);
+            profile = new Profile(id, username, password, sex, height, weight, bmi, profileImg);
         }
 
         cursor.close();
@@ -214,4 +216,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return result != -1;
     }
+
+    public boolean updateProfileImg (int userID, String Uri) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("ProfileImg", Uri);
+
+        int rowsAffected = db.update("User", values, "user_id = ?", new String[]{String.valueOf(userID)});
+        db.close();
+
+        return rowsAffected > 0;
+
+    }
+
 }
