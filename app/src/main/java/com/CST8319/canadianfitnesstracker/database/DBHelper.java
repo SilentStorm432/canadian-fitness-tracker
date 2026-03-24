@@ -20,6 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        //create all the db tables
         String createUserTable =
                 "CREATE TABLE User (" +
                         "user_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -205,7 +206,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean saveWeight(int userID, int weight) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put("UserID", userID);
         values.put("Date", String.valueOf(System.currentTimeMillis()));
