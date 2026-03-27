@@ -19,8 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.CST8319.canadianfitnesstracker.R;
 import com.CST8319.canadianfitnesstracker.database.DBHelper;
+import com.CST8319.canadianfitnesstracker.repository.ProfileRepository;
 
 public class ProfilePageActivity extends AppCompatActivity {
+
+    private ProfileRepository profileRepository;
 
     private EditText profileUsername;
     private EditText profilePassword;
@@ -92,8 +95,12 @@ private void loadProfileData(int userID)
     String height = "200";
     String sex = "Male";
 
-    DBHelper dbHelper = new DBHelper(this);
-    Profile profile = dbHelper.getUserByID(userID); // example user id
+    //old methods replaced with repository-AV ... I should stanrize the userID/Id
+    //DBHelper dbHelper = new DBHelper(this);
+    //Profile profile = dbHelper.getUserByID(userID); // example user id
+
+    profileRepository = new ProfileRepository(this);
+    Profile profile = profileRepository.getUserId(userID);
 
     if (profile != null)
     {
@@ -192,6 +199,8 @@ public void saveProfileData(int userID)
     int height;
     int weight;
 
+    // try catch was added because it let me add letters and stuff and that would have meesssed up data entry and I didnt wanted to find out how to only accept numbers so toast to the rescue-AV
+
     try {
         height = Integer.parseInt(profileHeight.getText().toString().trim());
         weight = Integer.parseInt(profileWeight.getText().toString().trim());
@@ -200,14 +209,24 @@ public void saveProfileData(int userID)
         return;
     }
 
-    DBHelper dbHelper = new DBHelper(this);
+    //moved to repository had to create dummy numbers for the profile constructor
+    //DBHelper dbHelper = new DBHelper(this);
 
-    boolean userUpdated = dbHelper.updateProfile(userID, username, password, sex, height);
-    boolean weightUpdated = dbHelper.saveWeight(userID, weight);
-    boolean imageUpdated = dbHelper.updateProfileImg(userID,profileImgUri);
+    //boolean userUpdated = dbHelper.updateProfile(userID, username, password, sex, height);
+    //boolean weightUpdated = dbHelper.saveWeight(userID, weight);
+    //boolean imageUpdated = dbHelper.updateProfileImg(userID,profileImgUri);
+
+    profileRepository = new ProfileRepository(this);
+    double bmi = 21;
+    String uri = "JeffyMishimaBigBuff";
+    Profile profile = new Profile(userID, username, password, sex, height, weight, bmi, uri);
+
+    boolean userUpdated = profileRepository.updateUser(profile);
+    boolean weightUpdated = profileRepository.updateWeight(userID, weight);
+    boolean imageUpdated = profileRepository.updateProfileImg(userID, profileImgUri);
 
     if (userUpdated && weightUpdated && imageUpdated) {
-        double bmi = 0;
+        bmi = 0;
         if (height > 0 && weight > 0) {
         }
 
