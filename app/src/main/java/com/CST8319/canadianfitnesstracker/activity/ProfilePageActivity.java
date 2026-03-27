@@ -1,25 +1,32 @@
 package com.CST8319.canadianfitnesstracker.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CST8319.canadianfitnesstracker.R;
-import com.CST8319.canadianfitnesstracker.database.DBHelper;
 import com.CST8319.canadianfitnesstracker.repository.ProfileRepository;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ProfilePageActivity extends AppCompatActivity {
 
@@ -46,6 +53,8 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<String[]> imgPicker;
 
+    private static final AtomicLong counter = new AtomicLong();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,23 +79,38 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         saveProfile.setOnClickListener(v -> saveProfileData(userID));
 
+        //source so I dont lose it  https://gist.github.com/mebjas/c44808589bb95ec288945b097dc2b687 and https://developer.android.com/training/basics/intents/result I dont fully get it yet but its kinda working
+        //tutorial to followhttps://www.youtube.com/watch?v=nOtlFl1aUCw
         imgPicker = registerForActivityResult(
-                new ActivityResultContracts.OpenDocument(),
-                uri -> {
-                    if (uri != null) {
-                        getContentResolver().takePersistableUriPermission(
-                                uri,
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        );
-
-                        profileImg.setImageURI(uri);
-                        profileImgUri = uri.toString();
-                        checkChanges();
+                new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri profPic)
+                    {
+                        // would break if deleted picture saving picture internally instead ... source to be doc in report https://gist.github.com/nikartx/79932c0a4f0a644f7ce020143146db98
+                        if (profPic != null)
+                        {
+                            String imgPath = saveImg(profPic);
+                            //turning the image into a bitmap to be saved
+                            //https://www.youtube.com/watch?v=we_uBkZAS90
+                            //https://developer.android.com/reference/android/graphics/BitmapFactory
+                            profileImg.setImageBitmap(BitmapFactory.decodeFile(imgPath));
+                            profileImgUri = imgPath;
+                            checkChanges();
+                        }
                     }
                 }
         );
 
-        profileImg.setOnClickListener(v -> imgPicker.launch(new String[]{"image/*"}));
+        profileImg.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                imgPicker.launch(new String[]{"image/*"});
+            }
+
+        });
+
     }
 private void loadProfileData(int userID)
 {
@@ -115,7 +139,9 @@ private void loadProfileData(int userID)
         String profileUri= profile.getProfileImg();
         if (profileUri != null && !profileUri.isEmpty())
         {
-            profileImg.setImageURI(Uri.parse(profileUri));
+            //how to load from file path https://www.geeksforgeeks.org/kotlin/how-to-display-image-from-image-file-path-in-android-using-jetpack-compose/
+           // profileImg.setImageURI(Uri.parse(profileUri));
+            profileImg.setImageBitmap(BitmapFactory.decodeFile(profileUri));
             profileImgUri = profileUri;
             originalImgUri = profileUri;
         }
@@ -236,6 +262,62 @@ public void saveProfileData(int userID)
         Toast.makeText(this, "Profile updated", Toast.LENGTH_SHORT).show();
     } else {
         Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+    }
+
+}
+
+//resource part of code taken from location where media was captured https://developer.android.com/training/data-storage/shared/media
+// input output strea, https://www.geeksforgeeks.org/java/java-io-input-output-in-java-with-examples
+private String saveImg (Uri photoUri)
+{
+    try {
+        InputStream stream = getContentResolver().openInputStream(photoUri);
+        if (stream == null)
+        {
+            return null;
+        }
+
+        //https://www.youtube.com/watch?v=ZtUAfoHHQMo&list=PLF77J-3i-EGkXaWzYphvW6TZYgT6tUD-l
+        //https://www.youtube.com/watch?v=OFzrYr_vVWg
+        String mine = getContentResolver().getType(photoUri);
+        String extension = MimeTypeMap.getSingleton().getMimeTypeFromExtension(mine);
+
+
+        //https://developer.android.com/training/data-storage/app-specific
+        File imgDirectory = new File(getFilesDir(), "profile_pictures");
+        if(!imgDirectory.exists())
+        {
+            imgDirectory.mkdir();
+        }
+
+        // apparently mime types should be used to put the extension file of the thing to be saved https://stackoverflow.com/questions/23385520/android-available-mime-types
+        //atomic counter ^^ https://www.geeksforgeeks.org/java/java-program-to-create-a-file-with-a-unique-name/
+
+        String fileName = "profpic" + counter.incrementAndGet() +"." + extension;
+        File imageFile = new File(imgDirectory, fileName);
+
+        OutputStream outputStream = new FileOutputStream(imageFile);
+
+        int temp;
+        while ((
+                temp = stream.read())
+                != -1)
+                outputStream.write((byte) temp);
+
+
+
+        stream.close();
+        outputStream.close();
+
+        return imageFile.getAbsolutePath();
+
+
+
+    }
+    catch(Exception e)
+    {
+        System.out.println("the flow of calamity has struck prilfile pic");
+        return null;
     }
 
 }
