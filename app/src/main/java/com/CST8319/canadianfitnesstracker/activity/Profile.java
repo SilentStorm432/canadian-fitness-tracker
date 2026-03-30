@@ -23,6 +23,7 @@ public class Profile {
         this.profileImg = profileImg;
     }
 
+
     public int getUserID() { return userID; }
     public String getUsername() { return usernamme; }
     public String getPassword() { return password; }
