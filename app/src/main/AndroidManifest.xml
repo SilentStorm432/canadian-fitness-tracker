@@ -14,6 +14,9 @@
         <activity android:name=".activity.ProfilePageActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.WeightTracker"
+            android:exported="false" />
+        <activity
             android:name=".activity.LogWorkoutActivity"
             android:exported="false" />
         <activity

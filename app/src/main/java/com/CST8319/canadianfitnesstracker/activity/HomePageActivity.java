@@ -31,6 +31,7 @@ public class HomePageActivity extends AppCompatActivity {
 
         Button logWorkoutButton = findViewById(R.id.logWorkoutButton);
         Button profileButton = findViewById(R.id.viewProfile);
+        Button trackWeightButton = findViewById(R.id.trackWeightButton);
 
         logWorkoutButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, LogWorkoutActivity.class);
@@ -39,6 +40,11 @@ public class HomePageActivity extends AppCompatActivity {
 
         profileButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, ProfilePageActivity.class);
+            startActivity(intent);
+        });
+
+        trackWeightButton.setOnClickListener(view -> {
+            Intent intent = new Intent(HomePageActivity.this, WeightTracker.class);
             startActivity(intent);
         });
 
