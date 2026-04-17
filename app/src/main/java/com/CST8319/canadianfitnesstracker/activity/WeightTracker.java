@@ -38,6 +38,9 @@ public class WeightTracker extends AppCompatActivity {
         loadProfileData(userID);
 
     }
+
+    //friday change me to use WeightData and Weight repository-av to av
+
     private void loadProfileData(int userID) {
         profileRepository = new ProfileRepository(this);
         Profile profile = profileRepository.getUserId(userID);

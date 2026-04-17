@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 
 import com.CST8319.canadianfitnesstracker.activity.Profile;
+import com.CST8319.canadianfitnesstracker.activity.WeightData;
 import com.CST8319.canadianfitnesstracker.database.WorkoutData;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -142,6 +143,45 @@ public class DBHelper extends SQLiteOpenHelper {
     public android.database.Cursor getAllWorkouts() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT Name FROM Workout", null);
+    }
+
+    //method to retrieve weekly weight -Alejandro ^^
+    public WeightData getWeightByID(int userID, String date)
+    {
+        int weightTotal=0;
+        int currentWeight;
+        int loopCount=0;
+        int weightAvg;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT u.user_id, uw.Weight, uw.Date " +
+                        "FROM User u " +
+                        "LEFT JOIN UserWeight uw ON u.user_id = uw.UserID " +
+                        "WHERE u.user_id = ? AND uw.Date LIKE ?";
+
+        android.database.Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userID), date + "%"});
+
+        WeightData weightData = null;
+
+        while (cursor.moveToNext())
+        {
+
+            currentWeight = cursor.getInt(cursor.getColumnIndexOrThrow("Weight"));
+            weightTotal = weightTotal + currentWeight;
+            loopCount++;
+
+        }
+
+        if (loopCount > 0)
+        {
+            weightAvg = weightTotal / loopCount;
+            weightData = new WeightData(weightAvg, date);
+        }
+
+        cursor.close();
+        db.close();
+
+        return weightData;
     }
 
     //method to retrieve data from db used in PPA -Alejandro
