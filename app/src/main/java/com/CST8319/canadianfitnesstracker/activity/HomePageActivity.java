@@ -22,6 +22,7 @@ public class HomePageActivity extends AppCompatActivity {
 
         userButton = findViewById(R.id.userButton);
         logoutButton = findViewById(R.id.logoutButton);
+        Button viewWorkoutButton = findViewById(R.id.viewWorkoutButton);
 
         String username = getIntent().getStringExtra("username");
 
@@ -45,6 +46,11 @@ public class HomePageActivity extends AppCompatActivity {
 
         trackWeightButton.setOnClickListener(view -> {
             Intent intent = new Intent(HomePageActivity.this, WeightTracker.class);
+            startActivity(intent);
+        });
+
+        viewWorkoutButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePageActivity.this, ViewWorkoutsActivity.class);
             startActivity(intent);
         });
 

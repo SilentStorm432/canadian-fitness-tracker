@@ -1,6 +1,7 @@
 package com.CST8319.canadianfitnesstracker.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
@@ -142,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public android.database.Cursor getAllWorkouts() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT Name FROM Workout", null);
+        return db.rawQuery("SELECT ID, Name FROM Workout", null);
     }
 
     //method to retrieve weekly weight -Alejandro ^^
@@ -268,6 +269,48 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return rowsAffected > 0;
 
+    }
+
+    public boolean addSession(String date, String time, int duration, int sets,
+                              int userID, int workoutID, int calories, String notes) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("Date", date);
+        values.put("Time", time);
+        values.put("Duration", duration);
+        values.put("Sets", sets);
+        values.put("UserID", userID);
+        values.put("WorkoutID", workoutID);
+        values.put("CaloriesBurned", calories);
+        values.put("Notes", notes);
+
+        long result = db.insert("Session", null, values);
+
+        db.close();
+
+        return result != -1;
+    }
+
+    public Cursor getSessionsByUser(int userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT s.ID, s.Date, s.Time, s.Duration, s.Sets, s.CaloriesBurned, s.Notes, w.Name " +
+                        "FROM Session s " +
+                        "JOIN Workout w ON s.WorkoutID = w.ID " +
+                        "WHERE s.UserID = ? " +
+                        "ORDER BY s.Date DESC";
+
+        return db.rawQuery(query, new String[]{String.valueOf(userID)});
+    }
+
+    public boolean deleteSession(int sessionID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete("Session", "ID = ?", new String[]{String.valueOf(sessionID)});
+        db.close();
+        return rows > 0;
     }
 
 }
