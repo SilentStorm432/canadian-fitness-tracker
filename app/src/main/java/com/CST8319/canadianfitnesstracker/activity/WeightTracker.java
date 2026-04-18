@@ -3,10 +3,13 @@ package com.CST8319.canadianfitnesstracker.activity;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
@@ -27,6 +30,10 @@ public class WeightTracker extends AppCompatActivity {
     private CustomGraphView graphView;
     int weight;
 
+    private EditText doYouKnowTheWeight;
+    private Button saveWeight;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +43,12 @@ public class WeightTracker extends AppCompatActivity {
         setContentView(R.layout.activity_weight_tracker);
         //added this to stop crasshes due to thing not initialized before setting the height
         graphView = findViewById(R.id.weightGraph);
+        doYouKnowTheWeight = findViewById(R.id.weightEntryText);
+        saveWeight = findViewById(R.id.weightEntryButton);
 
         loadProfileData(userID);
+
+        saveWeight.setOnClickListener(v -> saveProfileData(userID));
 
     }
 
@@ -54,9 +65,39 @@ public class WeightTracker extends AppCompatActivity {
 
             weight = weightData.getweightAvg();
 
-            graphView.setHeight(weight, i);
+            graphView.setHeight(weight, 6-i);
 
         }
     }
+
+    public void saveProfileData(int userID)
+    {
+
+        int weightEntry;
+
+        // try catch was added because it let me add letters and stuff and that would have meesssed up data entry and I didnt wanted to find out how to only accept numbers so toast to the rescue-AV
+        try {
+            weightEntry = Integer.parseInt(doYouKnowTheWeight.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "height and text must be whole numbers", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        weightRapository = new WeightRepository(this);
+
+        boolean weightUpdated = weightRapository.updateWeight(userID, weightEntry);
+
+        if (weightUpdated)
+        {
+            loadProfileData(userID);
+          Toast.makeText(this, "Weight updated", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
 
 }

@@ -30,12 +30,73 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="0.5">
+        android:layout_weight="0.1">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Time(week)"
             android:gravity="center"/>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.05">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Weight Entry (kg)"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.1">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3">
+            </RelativeLayout>
+            <EditText
+                android:id="@+id/weightEntryText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:hint="weight"/>
+            <RelativeLayout
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1">
+            </RelativeLayout>
+            <Button
+                android:id="@+id/weightEntryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Enter"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#D32F2F">
+            </Button>
+            <RelativeLayout
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3">
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dip"
+    android:layout_weight="0.3">
+    </RelativeLayout>
+
+
 
 </LinearLayout>
