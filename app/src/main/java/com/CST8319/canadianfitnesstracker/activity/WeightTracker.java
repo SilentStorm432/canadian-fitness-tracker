@@ -15,12 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.CST8319.canadianfitnesstracker.R;
 import com.CST8319.canadianfitnesstracker.graph.CustomGraphView;
 import com.CST8319.canadianfitnesstracker.repository.ProfileRepository;
+import com.CST8319.canadianfitnesstracker.repository.WeightRepository;
 
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class WeightTracker extends AppCompatActivity {
 
-    private ProfileRepository profileRepository;
+    private WeightRepository weightRapository;
     //had a non -static error thing pop up
     private CustomGraphView graphView;
     int weight;
@@ -42,11 +44,19 @@ public class WeightTracker extends AppCompatActivity {
     //friday change me to use WeightData and Weight repository-av to av
 
     private void loadProfileData(int userID) {
-        profileRepository = new ProfileRepository(this);
-        Profile profile = profileRepository.getUserId(userID);
-        weight = Integer.parseInt(profile.getWeight());
-        graphView.setHeight(weight);
+        for(int i = 0; i <7; i++)
+        {
+            LocalDate kyo = LocalDate.now().minusDays(i);
 
+            weightRapository = new WeightRepository(this);
+            Profile profile = weightRapository.getUserId(userID);
+            WeightData weightData = weightRapository.getWeightData(userID, String.valueOf(kyo));
+
+            weight = weightData.getweightAvg();
+
+            graphView.setHeight(weight, i);
+
+        }
     }
 
 }
