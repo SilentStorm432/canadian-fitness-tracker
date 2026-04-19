@@ -20,8 +20,9 @@ public class CustomGraphView extends View {
     private RectF rectangle[];
     private Paint color;
     private float rectangleWidth;
-    private float rectangleHeight;
+    private float[] rectangleHeight = new float[7];
     private boolean height = false;
+    private int columnNumber;
 
 
     public CustomGraphView(Context context) {
@@ -44,28 +45,29 @@ public class CustomGraphView extends View {
         init(attrs);
     }
 
-    public void setHeight(int inbound)
+    public void setHeight(int inbound, int column)
     {
-        rectangleHeight=inbound;
+        columnNumber = column;
+        rectangleHeight[column] = inbound;
         height= true;
 
-        int w = getHeight();
+        int w = getWidth();
         int h = getHeight();
 
         Float graphSize = (7 * rectangleWidth) ;
         Float border = (w- graphSize)/8;
 
         for (int i=0; i<7; i++)
-        {
+       {
 
             Float left = (i+1)*border + i * rectangleWidth;
-            Float top = h- rectangleHeight;
+            Float top = h- rectangleHeight[i];
             Float right = left + rectangleWidth;
             Float bottom = (float) h;
 
 
             rectangle[i].set(left, top, right, bottom);
-        }
+       }
 
         postInvalidate();
     }
@@ -90,7 +92,7 @@ public class CustomGraphView extends View {
         if (!height)
         {
             rectangleWidth = w * 0.12f;
-            rectangleHeight = h * 0.5f;
+            rectangleHeight[columnNumber] = h * 0.5f;
         }
         else
         {
@@ -101,17 +103,17 @@ public class CustomGraphView extends View {
         Float graphSize = (7 * rectangleWidth) ;
         Float border = (w- graphSize)/8;
 
-        for (int i=0; i<7; i++)
-        {
+       for (int i=0; i<7; i++)
+       {
 
             Float left = (i+1)*border + i * rectangleWidth;
-            Float top = h- rectangleHeight;
+            Float top = h- rectangleHeight[i];
             Float right = left + rectangleWidth;
             Float bottom = (float) h;
 
 
             rectangle[i].set(left, top, right, bottom);
-        }
+       }
     }
 
     //how to draw objects https://developer.android.com/develop/ui/compose/graphics/draw/overview doesnt rly help too much except visualizing what the top bottom left right mean

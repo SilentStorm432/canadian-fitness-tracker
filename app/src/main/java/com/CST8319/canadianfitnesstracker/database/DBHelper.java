@@ -10,6 +10,8 @@ import com.CST8319.canadianfitnesstracker.activity.Profile;
 import com.CST8319.canadianfitnesstracker.activity.WeightData;
 import com.CST8319.canadianfitnesstracker.database.WorkoutData;
 
+import java.time.LocalDate;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "fitness.db";
@@ -178,6 +180,10 @@ public class DBHelper extends SQLiteOpenHelper {
             weightAvg = weightTotal / loopCount;
             weightData = new WeightData(weightAvg, date);
         }
+        else
+        {
+            weightData = new WeightData(10, date);
+        }
 
         cursor.close();
         db.close();
@@ -246,10 +252,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean saveWeight(int userID, int weight) {
+        LocalDate today = LocalDate.now();
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("UserID", userID);
-        values.put("Date", String.valueOf(System.currentTimeMillis()));
+        values.put("Date", today + String.valueOf(System.currentTimeMillis()));
+        //added to test the formatting og current time millis to see how to use a date to parse info ... found out I got no idea what the numbers mean or how to turn them to a date so I am just appending thr date in front
+        System.out.println(today);
         values.put("Weight", weight);
 
         long result = db.insert("UserWeight", null, values);
